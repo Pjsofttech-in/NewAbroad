@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "https://wayabroad.in")
 @RequestMapping("/admissionForms")
 public class AbroadAdmissionFormController {
 

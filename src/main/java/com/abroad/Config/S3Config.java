@@ -15,10 +15,10 @@ public class S3Config {
 
     private static final Logger logger = LoggerFactory.getLogger(S3Config.class);
 
-    @Value("${aws.accessKeyId}")
+    @Value("${aws.access-key}")
     private String accessKey;
 
-    @Value("${aws.secretKey}")
+    @Value("${aws.secret-key}")
     private String secretKey;
 
     @Value("${aws.region}")

@@ -312,35 +312,85 @@
             Specification<AbroadEnquiry> spec = (root, query, cb) -> {
                 List<Predicate> predicates = new ArrayList<>();
 
-                // Role-based filters
-                switch (userRole) {
-                    case "BRANCH" -> predicates.add(cb.equal(root.get("branchCode"), effectiveBranchCode));
-                    case "STAFF" -> predicates.add(cb.equal(root.get("createdByEmail"), effectiveEmail));
+                // 🔐 Role-based filters
+                if ("BRANCH".equals(userRole)) {
+                    predicates.add(cb.equal(root.get("branchCode"), effectiveBranchCode));
+                } else if ("STAFF".equals(userRole)) {
+                    predicates.add(cb.equal(root.get("createdByEmail"), effectiveEmail));
                 }
 
-                // Additional filters
-                if (continent != null && !continent.isEmpty()) predicates.add(cb.equal(root.get("continent"), continent));
-                if (country != null && !country.isEmpty()) predicates.add(cb.equal(root.get("country"), country));
-                if (stream != null && !stream.isEmpty()) predicates.add(cb.equal(root.get("stream"), stream));
-                if (course != null && !course.isEmpty()) predicates.add(cb.equal(root.get("courseName"), course));
-                if (status != null && !status.isEmpty()) predicates.add(cb.equal(root.get("status"), status));
-                if (applyFor != null && !applyFor.isEmpty()) predicates.add(cb.equal(root.get("applyFor"), applyFor));
-                if (conductBy != null && !conductBy.isEmpty()) predicates.add(cb.equal(root.get("conductBy"), conductBy));
-                if (staffName != null && !staffName.isEmpty()) predicates.add(cb.equal(root.get("StaffName"), staffName));
-                if (fullName != null && !fullName.trim().isEmpty())
-                    predicates.add(cb.like(cb.lower(root.get("name")), "%" + fullName.toLowerCase() + "%"));
+                // 🌍 Filters
+                if (continent != null && !continent.isBlank())
+                    predicates.add(cb.equal(root.get("continent"), continent));
 
-                // Date filters
+                if (country != null && !country.isBlank())
+                    predicates.add(cb.equal(root.get("country"), country));
+
+                if (stream != null && !stream.isBlank())
+                    predicates.add(cb.equal(root.get("stream"), stream));
+
+                if (course != null && !course.isBlank())
+                    predicates.add(cb.equal(root.get("courseName"), course));
+
+                if (status != null && !status.isBlank())
+                    predicates.add(cb.equal(root.get("status"), status));
+
+                if (applyFor != null && !applyFor.isBlank())
+                    predicates.add(cb.equal(root.get("applyFor"), applyFor));
+
+                if (conductBy != null && !conductBy.isBlank())
+                    predicates.add(cb.equal(root.get("conductBy"), conductBy));
+
+                if (staffName != null && !staffName.isBlank())
+                    predicates.add(cb.equal(root.get("StaffName"), staffName));
+
+                // 🔍 Name search
+                if (fullName != null && !fullName.isBlank()) {
+                    predicates.add(
+                            cb.like(
+                                    cb.lower(root.get("name")),
+                                    "%" + fullName.trim().toLowerCase() + "%"
+                            )
+                    );
+                }
+
+                // 📅 Date filters
                 if (enquiryDateFilter != null) {
                     LocalDate today = LocalDate.now();
+
                     switch (enquiryDateFilter.toLowerCase()) {
-                        case "today" -> predicates.add(cb.equal(root.get("enquiry_date"), today));
-                        case "last7days" -> predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(6), today));
-                        case "last30days" -> predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(29), today));
-                        case "last365days" -> predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(364), today));
+                        case "today" ->
+                                predicates.add(cb.equal(root.get("enquiry_date"), today));
+
+                        case "last7days" ->
+                                predicates.add(cb.between(
+                                        root.get("enquiry_date"),
+                                        today.minusDays(6),
+                                        today
+                                ));
+
+                        case "last30days" ->
+                                predicates.add(cb.between(
+                                        root.get("enquiry_date"),
+                                        today.minusDays(29),
+                                        today
+                                ));
+
+                        case "last365days" ->
+                                predicates.add(cb.between(
+                                        root.get("enquiry_date"),
+                                        today.minusDays(364),
+                                        today
+                                ));
+
                         case "custom" -> {
-                            if (startDate != null && endDate != null)
-                                predicates.add(cb.between(root.get("enquiry_date"), startDate, endDate));
+                            if (startDate != null && endDate != null) {
+                                predicates.add(cb.between(
+                                        root.get("enquiry_date"),
+                                        startDate,
+                                        endDate
+                                ));
+                            }
                         }
                     }
                 }
@@ -348,6 +398,7 @@
                 query.orderBy(cb.desc(root.get("enquiry_date")));
                 return cb.and(predicates.toArray(new Predicate[0]));
             };
+
 
             // ✅ Step 4: Pagination safety
             int safePage = Math.max(page, 0);
@@ -357,9 +408,6 @@
             // ✅ Step 5: Execute
             return repository.findAll(spec, pageable);
         }
-
-
-
 
 
         @Override

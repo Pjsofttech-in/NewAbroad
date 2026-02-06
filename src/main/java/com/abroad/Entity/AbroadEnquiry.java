@@ -66,7 +66,7 @@ public class AbroadEnquiry {
     private String yearITR;
     private String amountITR;
     private String  hasPassport;
-    private String StaffName;
+    private String staffName;
 
     private String document1;
     private String document2;

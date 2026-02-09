@@ -4,6 +4,7 @@ import com.abroad.Entity.AbroadScholarship;
 
 import java.util.List;
 
+
 public interface AbroadScholarshipService {
 
 

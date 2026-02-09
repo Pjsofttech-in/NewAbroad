@@ -6,31 +6,42 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
+@Table(name = "abroad_scholarship")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AbroadScholarship {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Basic info
     private String sname;
-
-    private String category;
-
     private String qualification;
-
-    private String scholarshipFor;
-
     private String link;
+    private Long amount;
+    private String branchCode;
 
+    // Dynamic fields (can be converted to @ManyToOne later)
+    private String scholarshipcategory;
+    private String scholarshipFor;
+    private String scholarshipType;
+    private String studyLocation;
+
+    // Dates (correct types)
+    private String testDate;
+    private LocalDate deadline;
+    private String applyMonth;
+
+    // Results
+    private String testResult;
+
+    // Long text fields
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String logo;
@@ -39,22 +50,27 @@ public class AbroadScholarship {
     @Column(columnDefinition = "LONGTEXT")
     private String description;
 
-    private String scholarshipType;
-
-    private Long amount;
-
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String faq;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String eligibility;
 
-    private String testDate; // chenged
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String specialRequirement;
 
-    private String testResult;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String benefits;
 
-    private String studyLocation;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String examDetails;
 
-    private String branchCode;
-
-
-
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String pdf;
 }

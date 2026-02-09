@@ -14,13 +14,14 @@ import java.util.List;
 public class AbroadScholarshipController {
 
 
+
     private final AbroadScholarshipService service;
 
     public AbroadScholarshipController(AbroadScholarshipService service) {
         this.service = service;
     }
 
-    @PostMapping("/createScholarship")
+    @PostMapping("/create")
     public ResponseEntity<AbroadScholarship> addScholarship(
             @RequestBody AbroadScholarship scholarship) {
         return ResponseEntity.ok(service.saveScholarship(scholarship));

@@ -24,14 +24,10 @@ public interface EnquiryService {
 
     void deleteEnquiry(Long id, String role, String email);
 
-    Page<AbroadEnquiry> filterEnquiries(
-            String continent, String country, String stream, String course, String status,
-            String branchCode, String role, String email, String fullName,String staffName,
-            String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
-            String applyFor,
-            String conductBy,
-            int page, int size
-    );
+    Page<AbroadEnquiry> filterEnquiries(String continent, String country, String stream, String course,
+            String status, String branchCode, String role, String email, String fullName, String staffName,
+            String enquiryDateFilter, LocalDate startDate, LocalDate endDate, String applyFor, String conductBy,
+            String state, String city, String college, String university, String year, int page, int size);
 
     List<Map<String, Object>> getInquiryCountByCourseAsMap(String branchCode);
 

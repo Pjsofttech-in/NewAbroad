@@ -102,19 +102,25 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
 
     @PostMapping("/filter")
     public ResponseEntity<Map<String, Object>> filterEnquiries(
+
             @RequestParam(required = false) String continent,
             @RequestParam(required = false) String country,
             @RequestParam(required = false) String stream,
             @RequestParam(required = false) String course,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String staffName,
             @RequestParam(required = false) String enquiryDateFilter,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
             @RequestParam(required = false) String branchCode,
             @RequestParam(required = false) String applyFor,
             @RequestParam(required = false) String conductBy,
-            @RequestParam(required = false) String staffName,
+            @RequestParam(required = false) String state,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String college,
+            @RequestParam(required = false) String university,
+            @RequestParam(required = false) String year,
             @RequestParam String role,
             @RequestParam String email,
             @RequestParam(defaultValue = "0") int page,
@@ -124,20 +130,22 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
         LocalDate start = null;
         LocalDate end = null;
 
-        try {
-            if (startDate != null && !startDate.isEmpty()) start = LocalDate.parse(startDate);
-            if (endDate != null && !endDate.isEmpty()) end = LocalDate.parse(endDate);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid date format. Please use yyyy-MM-dd");
-        }
+        if (startDate != null && !startDate.isBlank())
+            start = LocalDate.parse(startDate);
 
-        Page<AbroadEnquiry> enquiryPage = service.filterEnquiries(
-                continent, country, stream, course, status,
-                branchCode, role, email, fullName,staffName,
-                enquiryDateFilter, start, end, applyFor, conductBy, page, size
-        );
+        if (endDate != null && !endDate.isBlank())
+            end = LocalDate.parse(endDate);
 
-        // ✅ Wrap response for frontend
+        Page<AbroadEnquiry> enquiryPage =
+                service.filterEnquiries(
+                        continent, country, stream, course, status,
+                        branchCode, role, email, fullName, staffName,
+                        enquiryDateFilter, start, end,
+                        applyFor, conductBy,
+                        state, city, college, university, year,
+                        page, size
+                );
+
         Map<String, Object> response = new HashMap<>();
         response.put("content", enquiryPage.getContent());
         response.put("currentPage", enquiryPage.getNumber());
@@ -148,8 +156,6 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
 
         return ResponseEntity.ok(response);
     }
-
-
 
     @GetMapping("/search")
     public ResponseEntity<List<AbroadEnquiry>> searchEnquiries(
@@ -163,7 +169,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
     }
 
 
-    /// we need inquiry by Day and Month Yearwise  wise count *******
+    // we need inquiry by Day and Month Yearwise  wise count *******
     @GetMapping("/inquiry-counts")
     public ResponseEntity<Map<String, Object>> getInquiryCounts(
             @RequestParam(required = false) Integer year,

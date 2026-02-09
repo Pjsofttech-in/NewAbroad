@@ -272,54 +272,31 @@
         }
 
         @Override
-        public Page<AbroadEnquiry> filterEnquiries(
-                String continent, String country, String stream, String course, String status,
-                String branchCode, String role, String email, String fullName, String staffName,
-                String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
-                String applyFor, String conductBy, int page, int size) {
+        public Page<AbroadEnquiry> filterEnquiries(String continent, String country, String stream, String course, String status,
+                String branchCode, String role, String email, String fullName, String staffName, String enquiryDateFilter,
+                LocalDate startDate, LocalDate endDate, String applyFor, String conductBy, String state, String city,
+                String college, String university, String year, int page, int size)
+        {
 
-            // ✅ Step 1: Permission validation
+            // 🔐 Permission check
             if (!permissionService.hasPermission(role, email, "POST")) {
                 throw new AccessDeniedException("No permission to filter enquiries");
             }
 
-            // ✅ Step 2: Role-based restrictions
-            String tempBranchCode = null;
-            String tempEmail = null;
+            String userRole = role.toUpperCase();
 
-            switch (role.toUpperCase()) {
-                case "SUPERADMIN":
-                    break;
-                case "BRANCH":
-                    if (branchCode == null || branchCode.isEmpty())
-                        throw new IllegalArgumentException("Branch code required for BRANCH role");
-                    tempBranchCode = branchCode;
-                    break;
-                case "STAFF":
-                    if (email == null || email.isEmpty())
-                        throw new IllegalArgumentException("Email required for STAFF role");
-                    tempEmail = email;
-                    break;
-                default:
-                    throw new AccessDeniedException("Invalid role: " + role);
-            }
-
-            final String effectiveBranchCode = tempBranchCode;
-            final String effectiveEmail = tempEmail;
-            final String userRole = role.toUpperCase();
-
-            // ✅ Step 3: Specification builder
             Specification<AbroadEnquiry> spec = (root, query, cb) -> {
+
                 List<Predicate> predicates = new ArrayList<>();
 
-                // 🔐 Role-based filters
+                // 🔐 Role based restriction
                 if ("BRANCH".equals(userRole)) {
-                    predicates.add(cb.equal(root.get("branchCode"), effectiveBranchCode));
+                    predicates.add(cb.equal(root.get("branchCode"), branchCode));
                 } else if ("STAFF".equals(userRole)) {
-                    predicates.add(cb.equal(root.get("createdByEmail"), effectiveEmail));
+                    predicates.add(cb.equal(root.get("createdByEmail"), email));
                 }
 
-                // 🌍 Filters
+                // 🌍 Basic filters
                 if (continent != null && !continent.isBlank())
                     predicates.add(cb.equal(root.get("continent"), continent));
 
@@ -342,9 +319,9 @@
                     predicates.add(cb.equal(root.get("conductBy"), conductBy));
 
                 if (staffName != null && !staffName.isBlank())
-                    predicates.add(cb.equal(root.get("StaffName"), staffName));
+                    predicates.add(cb.equal(root.get("staffName"), staffName));
 
-                // 🔍 Name search
+                // 🔎 Name search
                 if (fullName != null && !fullName.isBlank()) {
                     predicates.add(
                             cb.like(
@@ -353,6 +330,35 @@
                             )
                     );
                 }
+
+                // 📍 Location filters
+                if (state != null && !state.isBlank())
+                    predicates.add(cb.equal(
+                            cb.lower(root.get("state")),
+                            state.trim().toLowerCase()
+                    ));
+
+                if (city != null && !city.isBlank())
+                    predicates.add(cb.equal(
+                            cb.lower(root.get("city")),
+                            city.trim().toLowerCase()
+                    ));
+
+                // 🎓 Education filters
+                if (college != null && !college.isBlank())
+                    predicates.add(cb.equal(
+                            cb.lower(root.get("collage")), // spelling as entity
+                            college.trim().toLowerCase()
+                    ));
+
+                if (university != null && !university.isBlank())
+                    predicates.add(cb.equal(
+                            cb.lower(root.get("university")),
+                            university.trim().toLowerCase()
+                    ));
+
+                if (year != null && !year.isBlank())
+                    predicates.add(cb.equal(root.get("year"), year));
 
                 // 📅 Date filters
                 if (enquiryDateFilter != null) {
@@ -399,15 +405,14 @@
                 return cb.and(predicates.toArray(new Predicate[0]));
             };
 
+            Pageable pageable = PageRequest.of(
+                    Math.max(page, 0),
+                    Math.max(size, 1)
+            );
 
-            // ✅ Step 4: Pagination safety
-            int safePage = Math.max(page, 0);
-            int safeSize = Math.max(size, 1);
-            Pageable pageable = PageRequest.of(safePage, safeSize);
-
-            // ✅ Step 5: Execute
             return repository.findAll(spec, pageable);
         }
+
 
 
         @Override

@@ -94,4 +94,69 @@ public class StaffService
 
     }
 
+
+    // Qr code Added
+
+
+    // ==============================
+// NEW METHOD : CHECK PERMISSION
+// ==============================
+    public boolean hasPermission(String role, String email, String permission) {
+
+        Map<String, Boolean> permissions = getPermissionsByEmail(email);
+
+        if (permissions == null) {
+            return false;
+        }
+
+        Boolean allowed = permissions.get(permission);
+
+        return allowed != null && allowed;
+    }
+
+
+    // =================================
+// NEW METHOD : FETCH BRANCH CODE
+// =================================
+    public String fetchBranchCodeByRole(String role, String email) {
+
+        HttpServletRequest request =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/branchCodeByEmail")
+                        .queryParam("email", email)
+                        .queryParam("role", role)
+                        .build())
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
+
+    // =================================
+// NEW METHOD : GET INSTITUTE EMAIL
+// =================================
+    public String getInstituteEmailByBranchCode(String branchCode) {
+
+        HttpServletRequest request =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/instituteEmailByBranchCode")
+                        .queryParam("branchCode", branchCode)
+                        .build())
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
 }

@@ -48,13 +48,14 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/stafflogin","/userLogin","/permissionForUser","/getBranchCodeByUserEmail","/getAllBlogs","/getBlogByTitle","/createPartner","/createExamPreparation","/getExamById/{id}","/getAllExam","/getAllCourseName","/getAllStreams","/createRegisterForm","/createContactUS","/createAboutUs","/admissionForms/create","/getAllContinents","/hierarchy","/getAllCountries","/getAllStates","/getAllCities","/getAllUniversities","/getAllColleges","/getAllCourseName","/getAllStreams","/searchUniversities","/searchStates","/searchCities","/searchColleges","/searchCountries","/searchStreams","/getAll","/getById/{id}", "/getAllScholarshipStudyLocation", "/leads/create", "/createConsultationBooking","/getAllCourses", "/getAllCountries", "/getAllContinents", "/getAllBlogs","createConsultationBooking","getAll").permitAll()
-                        .requestMatchers("/stafflogin","/userLogin","/permissionForUser","/getBranchCodeByUserEmail","/getAllBlogs","/getBlogByTitle","/createPartner","/createExamPreparation",
-                                "/getExamById/{id}","/getAllExam","/getAllCourseName","/getAllStreams","/createRegisterForm","/createContactUS","/createAboutUs","/admissionForms/create","/getAllContinents",
-                                "/hierarchy","/getAllCountries","/getAllStates","/getAllCities","/getAllUniversities","/getAllColleges","/getAllCourseName","/getAllStreams","/searchUniversities","/searchStates",
-                                "/searchCities","/searchColleges","/searchCountries","/searchStreams","/getAll","/getById/{id}", "/getAllScholarshipStudyLocation",
-                                "/leads/create", "/createConsultationBooking","/getAllCourses", "/getAllCountries", "/getAllContinents", "/getAllBlogs","/getBlogById/{id}").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/stafflogin","/userLogin","/permissionForUser","/getBranchCodeByUserEmail","/getAllBlogs","/getBlogByTitle","/createPartner",
+                                "/createExamPreparation","/getExamById/{id}","/getAllExam","/getAllCourseName","/getAllStreams","/createRegisterForm","/createContactUS","/createAboutUs",
+                                "/admissionForms/create","/getAllContinents","/hierarchy","/getAllCountries","/getAllStates","/getAllCities","/getAllUniversities","/getAllColleges","/getAllCourseName",
+                                "/getAllStreams","/searchUniversities","/searchStates","/searchCities","/searchColleges","/searchCountries","/searchStreams","/getAll","/getById/{id}", "/getAllScholarshipStudyLocation",
+                                "/leads/create", "/createConsultationBooking","/getAllCourses", "/getAllCountries", "/getAllContinents", "/getAllBlogs","createConsultationBooking","getAll","/getBlogById/{id}").permitAll()
+
+
+                                               .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

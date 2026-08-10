@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -54,7 +55,8 @@ public class SecurityConfig {
                                 "/getAllStreams","/searchUniversities","/searchStates","/searchCities","/searchColleges","/searchCountries","/searchStreams","/getAll","/getById/{id}", "/getAllScholarshipStudyLocation",
                                 "/leads/create", "/createConsultationBooking","/getAllCourses", "/getAllCountries", "/getAllContinents", "/getAllBlogs","createConsultationBooking","getAll","/getBlogById/{id}").permitAll()
 
-
+                        .requestMatchers(HttpMethod.POST,
+                                "/form-submission").permitAll()
                                                .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

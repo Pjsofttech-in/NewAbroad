@@ -35,7 +35,7 @@ public class AbroadFormSubmission {
     @ManyToOne
     @JoinColumn(name = "course_id")
     @JsonIgnore
-    private AbroadCourse abroadCourse;
+    private AbroadCourseName abroadCourse;
 
     // Used only for SIGNUP
     private String password;

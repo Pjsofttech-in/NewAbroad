@@ -5,12 +5,13 @@ import com.abroad.DTO.AbroadFormSubmissionDTO;
 import com.abroad.DTO.AbroadFormSubmissionResponseDTO;
 import com.abroad.Entity.AbroadContinent;
 import com.abroad.Entity.AbroadCourse;
+import com.abroad.Entity.AbroadCourseName;
 import com.abroad.Entity.AbroadFormSubmission;
 
 import com.abroad.Enum.FormType;
+import com.abroad.Repository.AbroadCourseNameRepository;
 import com.abroad.Repository.AbroadFormSubmissionRepository;
 import com.abroad.Repository.ContinentRepository;
-import com.abroad.Repository.CourseRepository;
 import com.abroad.Service.AbroadFormSubmissionService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class AbroadFormSubmissionServiceImpl
 
     private final ContinentRepository continentRepository;
 
-    private final CourseRepository courseRepository;
+    private final AbroadCourseNameRepository courseRepository;
 
     private final PermissionServiceImpl permissionService;
 
@@ -59,7 +60,7 @@ public class AbroadFormSubmissionServiceImpl
 
         if (dto.getCourseId() != null) {
 
-            AbroadCourse course =
+            AbroadCourseName course =
                     courseRepository.findById(dto.getCourseId())
                             .orElseThrow(() ->
                                     new RuntimeException("Course not found with id: " + dto.getCourseId()));
@@ -241,7 +242,7 @@ public class AbroadFormSubmissionServiceImpl
 
         if (dto.getCourseId() != null) {
 
-            AbroadCourse course = courseRepository.findById(dto.getCourseId())
+            AbroadCourseName course = courseRepository.findById(dto.getCourseId())
                     .orElseThrow(() ->
                             new RuntimeException("Course not found"));
 

@@ -11,7 +11,7 @@ public interface AbroadCourseNameService {
 
     AbroadCourseName createCourseName(String role, String email, AbroadCourseName collegeName);
 
-    AbroadCourseName getCourseNameById(Long id, String role, String email);
+    AbroadCourseName getCourseNameById(Long id);
 
     List<AbroadCourseName> getAllCourseName();
 

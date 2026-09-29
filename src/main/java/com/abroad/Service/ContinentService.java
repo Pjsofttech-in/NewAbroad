@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface ContinentService {
     AbroadContinent createContinent(AbroadContinent abroadContinent, MultipartFile image, String role, String email);
-    List<AbroadContinent> getAllContinents(String role, String email);
-    AbroadContinent getContinentById(Long id, String role, String email);
+    List<AbroadContinent> getAllContinents();
+    AbroadContinent getContinentById(Long id);
     AbroadContinent updateContinent(Long id, AbroadContinent abroadContinent, MultipartFile image, String role, String email);
     void deleteContinent(Long id, String role, String email);
 }

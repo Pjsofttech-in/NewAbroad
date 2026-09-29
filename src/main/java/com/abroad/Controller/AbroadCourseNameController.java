@@ -21,10 +21,8 @@ public class AbroadCourseNameController {
     }
 
     @GetMapping("getCourseNameById/{id}")
-    public ResponseEntity<AbroadCourseName> getById(@PathVariable Long id,
-                                                    @RequestParam String role,
-                                                    @RequestParam String email){
-        return ResponseEntity.ok(courseNameService.getCourseNameById(id, role, email));
+    public ResponseEntity<AbroadCourseName> getById(@PathVariable Long id){
+        return ResponseEntity.ok(courseNameService.getCourseNameById(id));
     }
 
     @GetMapping("getAllCourseName")

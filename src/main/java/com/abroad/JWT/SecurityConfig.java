@@ -45,9 +45,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/stafflogin","/userLogin","/permissionForUser","/getBranchCodeByUserEmail","/getAllBlogs","/getBlogByTitle","/createPartner",
                                 "/createExamPreparation","/getExamById/{id}","/getAllExam","/getAllCourseName","/getAllStreams","/createRegisterForm","/createContactUS","/createAboutUs",
-                                "/admissionForms/create","/getAllContinents","/hierarchy","/getAllCountries","/getAllStates","/getAllCities","/getAllUniversities","/getAllColleges","/getAllCourseName",
+                                "/admissionForms/create","/getAllContinents","/hierarchy","/getAllCountries","/getAllStates","/getAllCities","/getAllUniversities","/getAllColleges","/getAllCourseName","getCourseNameById/{id}",
                                 "/getAllStreams","/searchUniversities","/searchStates","/searchCities","/searchColleges","/searchCountries","/searchStreams","/getAll","/getById/{id}", "/getAllScholarshipStudyLocation",
-                                "/leads/create", "/createConsultationBooking","/getAllCourses", "/getAllCountries", "/getAllContinents", "/getAllBlogs","createConsultationBooking","getAll","/getBlogById/{id}").permitAll()
+                                "/leads/create", "/createConsultationBooking","/getAllCourses", "/getAllCountries", "/getAllContinents", "/getAllBlogs","createConsultationBooking","getAll","/getBlogById/{id}",
+                                "/getContinentById/{id}").permitAll()
 
 
                                                .anyRequest().authenticated()

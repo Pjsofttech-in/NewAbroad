@@ -29,10 +29,10 @@ public class AbroadCourseNameServiceImpl implements AbroadCourseNameService {
     }
 
     @Override
-    public AbroadCourseName getCourseNameById(Long id, String role, String email){
-        if(!permissionService.hasPermission(role,email,"Get")){
-            throw new RuntimeException("AccessDenied");
-        }
+    public AbroadCourseName getCourseNameById(Long id){
+//        if(!permissionService.hasPermission(role,email,"Get")){
+//            throw new RuntimeException("AccessDenied");
+//        }
         return courseNameRepository.findById(id).get();
     }
 

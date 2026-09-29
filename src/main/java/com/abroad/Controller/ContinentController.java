@@ -42,16 +42,14 @@ public class ContinentController {
     }
 
     @GetMapping("/getAllContinents")
-    public ResponseEntity<List<AbroadContinent>> getAllContinents(@RequestParam String role,
-                                                                  @RequestParam String email) {
-        return ResponseEntity.ok(service.getAllContinents(role, email));
+    public ResponseEntity<List<AbroadContinent>> getAllContinents() {
+        return ResponseEntity.ok(service.getAllContinents());
     }
 
+
     @GetMapping("/getContinentById/{id}")
-    public ResponseEntity<AbroadContinent> getContinentById(@PathVariable Long id,
-                                                            @RequestParam String role,
-                                                            @RequestParam String email) {
-        return ResponseEntity.ok(service.getContinentById(id, role, email));
+    public ResponseEntity<AbroadContinent> getContinentById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getContinentById(id));
     }
 
     @DeleteMapping("/deleteContinent/{id}")

@@ -44,17 +44,13 @@ public class UniversityController {
     }
 
     @GetMapping("/getAllUniversities")
-    public ResponseEntity<List<AbroadUniversity>> getAllUniversities(@RequestParam String role,
-                                                                     @RequestParam String email,
-                                                                     @RequestParam(required = false) Long cityId) {
-        return ResponseEntity.ok(service.getAllUniversities(role, email, cityId));
+    public ResponseEntity<List<AbroadUniversity>> getAllUniversities(@RequestParam(required = false) Long cityId) {
+        return ResponseEntity.ok(service.getAllUniversities(cityId));
     }
 
     @GetMapping("/getUniversityById/{id}")
-    public ResponseEntity<AbroadUniversity> getUniversityById(@PathVariable Long id,
-                                                              @RequestParam String role,
-                                                              @RequestParam String email) {
-        return ResponseEntity.ok(service.getUniversityById(id, role, email));
+    public ResponseEntity<AbroadUniversity> getUniversityById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getUniversityById(id));
     }
 
     @DeleteMapping("/deleteUniversity/{id}")

@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface CollegeService {
     AbroadCollege createCollege(AbroadCollege abroadCollege, MultipartFile image, String role, String email, Long universityId) throws IOException;
-    List<AbroadCollege> getAllColleges(String role, String email, Long universityId);
-    AbroadCollege getCollegeById(Long id, String role, String email);
+    List<AbroadCollege> getAllColleges(Long universityId);
+    AbroadCollege getCollegeById(Long id);
     AbroadCollege updateCollege(Long id, AbroadCollege abroadCollege, MultipartFile image, String role, String email);
     void deleteCollege(Long id, String role, String email);
     public List<String> searchCollegeNames(String name);

@@ -35,17 +35,13 @@ public class CityController {
     }
 
     @GetMapping("/getAllCities")
-    public ResponseEntity<List<AbroadCity>> getAllCities(@RequestParam String role,
-                                                         @RequestParam String email,
-                                                         @RequestParam(required = false) Long stateId) {
-        return ResponseEntity.ok(service.getAllCities(role, email, stateId));
+    public ResponseEntity<List<AbroadCity>> getAllCities(@RequestParam(required = false) Long stateId) {
+        return ResponseEntity.ok(service.getAllCities(stateId));
     }
 
     @GetMapping("/getCityById/{id}")
-    public ResponseEntity<AbroadCity> getCityById(@PathVariable Long id,
-                                                  @RequestParam String role,
-                                                  @RequestParam String email) {
-        return ResponseEntity.ok(service.getCityById(id, role, email));
+    public ResponseEntity<AbroadCity> getCityById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getCityById(id));
     }
 
     @PutMapping("/updateCity/{id}")

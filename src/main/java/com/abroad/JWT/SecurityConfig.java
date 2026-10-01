@@ -53,7 +53,7 @@ public class SecurityConfig {
                                 "/admissionForms/create","/getAllContinents","/hierarchy","/getAllCountries","/getAllStates","/getAllCities","/getAllUniversities","/getAllColleges","/getAllCourseName","getCourseNameById/{id}",
                                 "/getAllStreams","/searchUniversities","/searchStates","/searchCities","/searchColleges","/searchCountries","/searchStreams","/getAll","/getById/{id}", "/getAllScholarshipStudyLocation",
                                 "/leads/create", "/createConsultationBooking","/getAllCourses", "/getAllCountries", "/getAllContinents", "/getAllBlogs","createConsultationBooking","getAll","/getBlogById/{id}",
-                                "/getContinentById/{id}").permitAll()
+                                "/getContinentById/{id}","/form-submission","/getStreamById/{id}","/getCountryById/{id}","/getCityById/{id}","/getUniversityById/{id}","/getCollegeById/{id}","/getStateById/{id}").permitAll()
 
 
                                                .anyRequest().authenticated()

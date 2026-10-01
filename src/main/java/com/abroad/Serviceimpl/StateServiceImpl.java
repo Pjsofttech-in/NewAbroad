@@ -56,10 +56,10 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public List<AbroadState> getAllStates(String role, String email, Long countryId) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view states");
-        }
+    public List<AbroadState> getAllStates(Long countryId) {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view states");
+//        }
 
         if (countryId != null) {
             return stateRepository.findAllByAbroadCountryId(countryId);
@@ -69,10 +69,10 @@ public class StateServiceImpl implements StateService {
     }
 
     @Override
-    public AbroadState getStateById(Long id, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view State");
-        }
+    public AbroadState getStateById(Long id) {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view State");
+//        }
 
         return stateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("State not found"));

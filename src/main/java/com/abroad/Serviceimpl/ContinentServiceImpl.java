@@ -51,9 +51,6 @@ public class ContinentServiceImpl implements ContinentService {
 
     @Override
     public List<AbroadContinent> getAllContinents() {
-//        if (!permissionService.hasPermission(role, email, "GET")) {
-//            throw new AccessDeniedException("No permission to view Continents");
-//        }
 
 ////         branchCode = permissionService.fetchBranchCode(role, email);
 //        return repository.findAllByBranchCode(branchCode);
@@ -62,9 +59,6 @@ public class ContinentServiceImpl implements ContinentService {
 
     @Override
     public AbroadContinent getContinentById(Long id) {
-//        if (!permissionService.hasPermission(role, email, "GET")) {
-//            throw new AccessDeniedException("No permission to view Continent");
-//        }
 
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Continent not found"));

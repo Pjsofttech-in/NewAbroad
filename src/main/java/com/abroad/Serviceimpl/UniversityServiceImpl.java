@@ -58,10 +58,10 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public List<AbroadUniversity> getAllUniversities(String role, String email, Long cityId) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view Universities");
-        }
+    public List<AbroadUniversity> getAllUniversities(Long cityId) {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view Universities");
+//        }
 
         if (cityId != null) {
             return repository.findAllByBranchCodeAndCountry( cityId);
@@ -71,10 +71,10 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public AbroadUniversity getUniversityById(Long id, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view University");
-        }
+    public AbroadUniversity getUniversityById(Long id) {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view University");
+//        }
 
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("University not found"));

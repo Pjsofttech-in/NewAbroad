@@ -35,17 +35,13 @@ public class CountryController {
     }
 
     @GetMapping("/getAllCountries")
-    public ResponseEntity<List<AbroadCountry>> getAllCountries(@RequestParam String role,
-                                                               @RequestParam String email,
-                                                               @RequestParam(required = false) Long continentId) {
-        return ResponseEntity.ok(service.getAllCountries(role, email, continentId));
+    public ResponseEntity<List<AbroadCountry>> getAllCountries(@RequestParam(required = false) Long continentId) {
+        return ResponseEntity.ok(service.getAllCountries(continentId));
     }
 
     @GetMapping("/getCountryById/{id}")
-    public ResponseEntity<AbroadCountry> getCountryById(@PathVariable Long id,
-                                                        @RequestParam String role,
-                                                        @RequestParam String email) {
-        return ResponseEntity.ok(service.getCountryById(id, role, email));
+    public ResponseEntity<AbroadCountry> getCountryById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getCountryById(id));
     }
 
     @PutMapping("/updateCountry/{id}")

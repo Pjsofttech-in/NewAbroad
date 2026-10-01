@@ -56,10 +56,10 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public List<AbroadCity> getAllCities(String role, String email, Long stateId) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view cities");
-        }
+    public List<AbroadCity> getAllCities(Long stateId) {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view cities");
+//        }
 
         if (stateId != null) {
             return cityRepository.findAllByAbroadStateId(stateId);
@@ -69,10 +69,10 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public AbroadCity getCityById(Long id, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view City");
-        }
+    public AbroadCity getCityById(Long id) {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view City");
+//        }
 
         return cityRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("City not found"));

@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,15 +40,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF
-                .cors(cors -> cors.configurationSource(request -> {
-                    var config = new org.springframework.web.cors.CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:5173","https://wayabroad.in")); // Frontend origin
-                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // HTTP methods
-                    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-                    config.setAllowCredentials(true);
-                    return config;
-                }))
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/stafflogin","/userLogin","/permissionForUser","/getBranchCodeByUserEmail","/getAllBlogs","/getBlogByTitle","/createPartner",
                                 "/createExamPreparation","/getExamById/{id}","/getAllExam","/getAllCourseName","/getAllStreams","/createRegisterForm","/createContactUS","/createAboutUs",

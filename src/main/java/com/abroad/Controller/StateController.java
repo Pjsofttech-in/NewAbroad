@@ -34,17 +34,13 @@ public class StateController {
     }
 
     @GetMapping("/getAllStates")
-    public ResponseEntity<List<AbroadState>> getAllStates(@RequestParam String role,
-                                                          @RequestParam String email,
-                                                          @RequestParam(required = false) Long countryId) {
-        return ResponseEntity.ok(service.getAllStates(role, email, countryId));
+    public ResponseEntity<List<AbroadState>> getAllStates(@RequestParam(required = false) Long countryId) {
+        return ResponseEntity.ok(service.getAllStates(countryId));
     }
 
     @GetMapping("/getStateById/{id}")
-    public ResponseEntity<AbroadState> getStateById(@PathVariable Long id,
-                                                    @RequestParam String role,
-                                                    @RequestParam String email) {
-        return ResponseEntity.ok(service.getStateById(id, role, email));
+    public ResponseEntity<AbroadState> getStateById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getStateById(id));
     }
 
     @PutMapping("/updateState/{id}")

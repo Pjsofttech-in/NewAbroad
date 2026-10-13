@@ -7,6 +7,8 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import java.util.Locale;
+import java.util.UUID;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -82,6 +84,67 @@ public class S3Service {
         } catch (Exception e) {
             System.err.println("Failed to delete image from S3: " + e.getMessage());
             throw new RuntimeException("Failed to delete image from S3", e);
+        }
+    }
+
+    public String uploadResume(MultipartFile file) throws IOException {
+
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Resume file is required");
+        }
+
+        if (file.getSize() > 5 * 1024 * 1024) {
+            throw new IllegalArgumentException(
+                    "Resume size must not exceed 5 MB"
+            );
+        }
+
+        String originalFilename = file.getOriginalFilename();
+
+        if (originalFilename == null || originalFilename.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Resume must have a valid filename"
+            );
+        }
+
+        String filename = originalFilename.toLowerCase(Locale.ROOT);
+
+        if (!(filename.endsWith(".pdf")
+                || filename.endsWith(".doc")
+                || filename.endsWith(".docx"))) {
+            throw new IllegalArgumentException(
+                    "Only PDF, DOC, and DOCX resumes are allowed"
+            );
+        }
+
+        String extension = filename.substring(filename.lastIndexOf('.'));
+        String fileKey = "abroad-sys/resumes/"
+                + UUID.randomUUID() + extension;
+
+        java.nio.file.Path tempPath = Files.createTempFile(
+                "job-resume-", extension
+        );
+
+        try {
+            file.transferTo(tempPath.toFile());
+
+            PutObjectRequest request = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fileKey)
+                    .contentType(file.getContentType())
+                    .build();
+
+            s3Client.putObject(
+                    request,
+                    RequestBody.fromFile(tempPath)
+            );
+
+            return "https://" + bucketName
+                    + ".s3." + region
+                    + ".amazonaws.com/" + fileKey;
+
+        } finally {
+            Files.deleteIfExists(tempPath);
         }
     }
 }

@@ -49,10 +49,10 @@ public class CollegeServiceImpl implements CollegeService {
     }
 
     @Override
-    public List<AbroadCollege> getAllColleges(String role, String email, Long universityId) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view Colleges");
-        }
+    public List<AbroadCollege> getAllColleges(Long universityId) {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view Colleges");
+//        }
 
         if (universityId != null) {
             return repository.findAllByBranchCodeAndUniversityId( universityId);
@@ -62,10 +62,10 @@ public class CollegeServiceImpl implements CollegeService {
     }
 
     @Override
-    public AbroadCollege getCollegeById(Long id, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view College");
-        }
+    public AbroadCollege getCollegeById(Long id) {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view College");
+//        }
 
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("College not found"));

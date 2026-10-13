@@ -9,7 +9,7 @@ import java.util.Map;
 public interface StreamService {
     AbroadStream createStream(AbroadStream abroadStream, MultipartFile image, String role, String email);
     List<AbroadStream> getAllStreams();
-    AbroadStream getStreamById(Long id, String role, String email);
+    AbroadStream getStreamById(Long id);
     AbroadStream updateStream(Long id, AbroadStream abroadStream, MultipartFile image, String role, String email);
     void deleteStream(Long id, String role, String email);
     List<Map<String, Object>> getInquiryCountByStreamAsMap();

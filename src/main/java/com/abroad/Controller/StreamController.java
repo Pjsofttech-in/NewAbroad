@@ -50,10 +50,8 @@ public class StreamController {
 
 
     @GetMapping("/getStreamById/{id}")
-    public ResponseEntity<AbroadStream> getStreamById(@PathVariable Long id,
-                                                      @RequestParam String role,
-                                                      @RequestParam String email) {
-        return ResponseEntity.ok(service.getStreamById(id, role, email));
+    public ResponseEntity<AbroadStream> getStreamById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getStreamById(id));
     }
 
     @DeleteMapping("/deleteStream/{id}")

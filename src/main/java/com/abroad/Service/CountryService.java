@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface CountryService {
     AbroadCountry createCountry(AbroadCountry country, MultipartFile image, Long continentId, String role, String email);
-    List<AbroadCountry> getAllCountries(String role, String email, Long continentId);
-    AbroadCountry getCountryById(Long id, String role, String email);
+    List<AbroadCountry> getAllCountries(Long continentId);
+    AbroadCountry getCountryById(Long id);
     AbroadCountry updateCountry(Long id, AbroadCountry country, MultipartFile image, Long continentId, String role, String email);
     void deleteCountry(Long id, String role, String email);
      List<String> searchCountryNames(String name);

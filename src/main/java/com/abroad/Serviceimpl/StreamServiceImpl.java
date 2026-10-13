@@ -78,10 +78,10 @@ public class StreamServiceImpl implements StreamService {
     }
 
     @Override
-    public AbroadStream getStreamById(Long id, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view Stream");
-        }
+    public AbroadStream getStreamById(Long id) {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view Stream");
+//        }
 
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Stream not found"));

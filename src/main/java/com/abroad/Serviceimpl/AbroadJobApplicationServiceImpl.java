@@ -1,4 +1,4 @@
-package com.abroad.ServiceImpl;
+package com.abroad.Serviceimpl;
 
 import com.abroad.DTO.AbroadJobApplicationRequestDTO;
 import com.abroad.DTO.AbroadJobApplicationResponseDTO;

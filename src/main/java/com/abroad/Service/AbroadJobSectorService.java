@@ -1,46 +1,41 @@
 package com.abroad.Service;
 
+import com.abroad.DTO.AbroadJobSectorResponseDTO;
 import com.abroad.Entity.AbroadJobSector;
 
 import java.util.List;
 
 public interface AbroadJobSectorService {
 
-    AbroadJobSector create(
+    AbroadJobSectorResponseDTO create(
             AbroadJobSector sector,
             Long educationId,
             String role,
-            String email
-    );
+            String email);
 
-    List<AbroadJobSector> getAll(
+    List<AbroadJobSectorResponseDTO> getAll(
             String role,
-            String email
-    );
+            String email);
 
-    List<AbroadJobSector> getByEducation(
+    List<AbroadJobSectorResponseDTO> getByEducation(
             Long educationId,
             String role,
-            String email
-    );
+            String email);
 
-    AbroadJobSector getById(
+    AbroadJobSectorResponseDTO getById(
             Long id,
             String role,
-            String email
-    );
+            String email);
 
-    AbroadJobSector update(
+    AbroadJobSectorResponseDTO update(
             Long id,
             AbroadJobSector sector,
             Long educationId,
             String role,
-            String email
-    );
+            String email);
 
     void delete(
             Long id,
             String role,
-            String email
-    );
+            String email);
 }

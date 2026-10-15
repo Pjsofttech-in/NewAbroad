@@ -1,5 +1,7 @@
+
 package com.abroad.Controller;
 
+import com.abroad.DTO.AbroadJobSectorResponseDTO;
 import com.abroad.Entity.AbroadJobSector;
 import com.abroad.Service.AbroadJobSectorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,64 +19,49 @@ public class AbroadJobSectorController {
     private AbroadJobSectorService service;
 
     @PostMapping
-    public ResponseEntity<AbroadJobSector> create(
+    public ResponseEntity<AbroadJobSectorResponseDTO> create(
             @RequestBody AbroadJobSector sector,
             @RequestParam Long educationId,
             @RequestParam String role,
             @RequestParam String email) {
 
         return ResponseEntity.ok(
-                service.create(
-                        sector,
-                        educationId,
-                        role,
-                        email
-                )
+                service.create(sector, educationId, role, email)
         );
     }
 
     @GetMapping
-    public ResponseEntity<List<AbroadJobSector>> getAll(
+    public ResponseEntity<List<AbroadJobSectorResponseDTO>> getAll(
             @RequestParam String role,
             @RequestParam String email) {
 
-        return ResponseEntity.ok(
-                service.getAll(role, email)
-        );
+        return ResponseEntity.ok(service.getAll(role, email));
     }
 
     @GetMapping("/by-education/{educationId}")
-    public ResponseEntity<List<AbroadJobSector>> getByEducation(
+    public ResponseEntity<List<AbroadJobSectorResponseDTO>> getByEducation(
             @PathVariable Long educationId,
             @RequestParam String role,
             @RequestParam String email) {
 
         return ResponseEntity.ok(
-                service.getByEducation(
-                        educationId,
-                        role,
-                        email
-                )
+                service.getByEducation(educationId, role, email)
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AbroadJobSector> getById(
+    public ResponseEntity<AbroadJobSectorResponseDTO> getById(
             @PathVariable Long id,
             @RequestParam String role,
             @RequestParam String email) {
 
         return ResponseEntity.ok(
-                service.getById(
-                        id,
-                        role,
-                        email
-                )
+                service.getById(id, role, email)
         );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AbroadJobSector> update(
+    public ResponseEntity<AbroadJobSectorResponseDTO> update(
             @PathVariable Long id,
             @RequestBody AbroadJobSector sector,
             @RequestParam Long educationId,
@@ -82,13 +69,7 @@ public class AbroadJobSectorController {
             @RequestParam String email) {
 
         return ResponseEntity.ok(
-                service.update(
-                        id,
-                        sector,
-                        educationId,
-                        role,
-                        email
-                )
+                service.update(id, sector, educationId, role, email)
         );
     }
 
@@ -100,8 +81,6 @@ public class AbroadJobSectorController {
 
         service.delete(id, role, email);
 
-        return ResponseEntity.ok(
-                "Sector deleted successfully"
-        );
+        return ResponseEntity.ok("Sector deleted successfully");
     }
 }

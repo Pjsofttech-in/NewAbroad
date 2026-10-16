@@ -343,10 +343,7 @@ public class AbroadJobServiceImpl implements AbroadJobService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AbroadJobResponseDTO> getAllJobs(
-            String role, String email) {
-
-        checkPermission(role, email, "GET");
+    public List<AbroadJobResponseDTO> getAllJobs() {
 
         return jobRepository.findAll()
                 .stream()
@@ -356,10 +353,7 @@ public class AbroadJobServiceImpl implements AbroadJobService {
 
     @Override
     @Transactional(readOnly = true)
-    public AbroadJobResponseDTO getJobById(
-            Long id, String role, String email) {
-
-        checkPermission(role, email, "GET");
+    public AbroadJobResponseDTO getJobById(Long id) {
 
         AbroadJob job = required(
                 jobRepository.findById(id).orElse(null),

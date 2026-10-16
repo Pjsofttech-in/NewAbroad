@@ -18,16 +18,9 @@ public interface AbroadJobService {
             String email
     );
 
-    List<AbroadJobResponseDTO> getAllJobs(
-            String role,
-            String email
-    );
+    List<AbroadJobResponseDTO> getAllJobs();
 
-    AbroadJobResponseDTO getJobById(
-            Long id,
-            String role,
-            String email
-    );
+    AbroadJobResponseDTO getJobById(Long id);
 
     AbroadJobResponseDTO updateJob(
             Long id,

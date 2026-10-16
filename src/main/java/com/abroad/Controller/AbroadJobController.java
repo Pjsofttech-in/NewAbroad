@@ -38,24 +38,19 @@ public class AbroadJobController {
                 .body(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<AbroadJobResponseDTO>> getAllJobs(
-            @RequestParam String role,
-            @RequestParam String email) {
+    @GetMapping ("/getAllJobs")
+    public ResponseEntity<List<AbroadJobResponseDTO>> getAllJobs() {
 
         return ResponseEntity.ok(
-                jobService.getAllJobs(role, email)
+                jobService.getAllJobs()
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AbroadJobResponseDTO> getJobById(
-            @PathVariable Long id,
-            @RequestParam String role,
-            @RequestParam String email) {
+    public ResponseEntity<AbroadJobResponseDTO> getJobById(@PathVariable Long id) {
 
         return ResponseEntity.ok(
-                jobService.getJobById(id, role, email)
+                jobService.getJobById(id)
         );
     }
 

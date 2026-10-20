@@ -52,6 +52,13 @@ public class AbroadJob {
     @JoinColumn(name = "currency_id", nullable = false)
     private AbroadJobCurrency currency;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "work_type_id")
+    private AbroadJobWorkType workType;
+
+    @Column(name = "experience_level", length = 100)
+    private String experienceLevel;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "job_type_id", nullable = false)
     private AbroadJobType jobType;

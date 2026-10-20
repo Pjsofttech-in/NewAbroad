@@ -1,4 +1,3 @@
-
 package com.abroad.Serviceimpl;
 
 import com.abroad.DTO.AbroadJobRequestDTO;
@@ -7,23 +6,24 @@ import com.abroad.Entity.*;
 import com.abroad.Repository.*;
 import com.abroad.Service.AbroadJobService;
 import com.abroad.Service.PermissionService;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.abroad.Pagination.AbroadJobSearchSpecification;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import java.util.Set;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -36,6 +36,7 @@ public class AbroadJobServiceImpl implements AbroadJobService {
     private final AbroadJobLocationRepository locationRepository;
     private final AbroadJobCurrencyRepository currencyRepository;
     private final AbroadJobTypeRepository typeRepository;
+    private final AbroadJobWorkTypeRepository workTypeRepository;
     private final PermissionService permissionService;
 
     public AbroadJobServiceImpl(
@@ -46,6 +47,7 @@ public class AbroadJobServiceImpl implements AbroadJobService {
             AbroadJobLocationRepository locationRepository,
             AbroadJobCurrencyRepository currencyRepository,
             AbroadJobTypeRepository typeRepository,
+            AbroadJobWorkTypeRepository workTypeRepository,
             PermissionService permissionService
     ) {
         this.jobRepository = jobRepository;
@@ -55,12 +57,15 @@ public class AbroadJobServiceImpl implements AbroadJobService {
         this.locationRepository = locationRepository;
         this.currencyRepository = currencyRepository;
         this.typeRepository = typeRepository;
+        this.workTypeRepository = workTypeRepository;
         this.permissionService = permissionService;
     }
 
     private void checkPermission(
-            String role, String email, String action) {
-
+            String role,
+            String email,
+            String action
+    ) {
         if (role == null || email == null
                 || role.isBlank() || email.isBlank()) {
             throw new ResponseStatusException(
@@ -78,8 +83,10 @@ public class AbroadJobServiceImpl implements AbroadJobService {
     }
 
     private <T> T required(
-            T entity, String entityName, Long id) {
-
+            T entity,
+            String entityName,
+            Long id
+    ) {
         if (entity == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -91,7 +98,6 @@ public class AbroadJobServiceImpl implements AbroadJobService {
     }
 
     private void validateRequest(AbroadJobRequestDTO request) {
-
         if (request == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -107,11 +113,14 @@ public class AbroadJobServiceImpl implements AbroadJobService {
             );
         }
 
-        if (request.getSkill() == null
-                || request.getSkill().isBlank()) {
+        if (request.getSkills() == null
+                || request.getSkills().isEmpty()
+                || request.getSkills().stream()
+                .noneMatch(skill ->
+                        skill != null && !skill.isBlank())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Skill is required"
+                    "At least one valid skill is required"
             );
         }
 
@@ -136,10 +145,26 @@ public class AbroadJobServiceImpl implements AbroadJobService {
                 || request.getJobRoleId() == null
                 || request.getLocationId() == null
                 || request.getCurrencyId() == null
-                || request.getJobTypeId() == null) {
+                || request.getJobTypeId() == null
+                || request.getWorkTypeId() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "All six master IDs are required"
+                    "All seven master IDs, including Work Type, are required"
+            );
+        }
+
+        if (request.getExperienceLevel() == null
+                || request.getExperienceLevel().isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Experience Level is required"
+            );
+        }
+
+        if (request.getExperienceLevel().trim().length() > 100) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Experience Level cannot exceed 100 characters"
             );
         }
     }
@@ -147,7 +172,8 @@ public class AbroadJobServiceImpl implements AbroadJobService {
     private AbroadJobEducation getEducation(Long id) {
         AbroadJobEducation education = required(
                 educationRepository.findById(id).orElse(null),
-                "Education", id
+                "Education",
+                id
         );
 
         if (!Boolean.TRUE.equals(education.getActive())) {
@@ -161,11 +187,13 @@ public class AbroadJobServiceImpl implements AbroadJobService {
     }
 
     private AbroadJobSector getSector(
-            Long id, AbroadJobEducation education) {
-
+            Long id,
+            AbroadJobEducation education
+    ) {
         AbroadJobSector sector = required(
                 sectorRepository.findById(id).orElse(null),
-                "Sector", id
+                "Sector",
+                id
         );
 
         if (!Boolean.TRUE.equals(sector.getActive())) {
@@ -188,11 +216,13 @@ public class AbroadJobServiceImpl implements AbroadJobService {
     }
 
     private AbroadJobRole getJobRole(
-            Long id, AbroadJobSector sector) {
-
+            Long id,
+            AbroadJobSector sector
+    ) {
         AbroadJobRole jobRole = required(
                 roleRepository.findById(id).orElse(null),
-                "Job Role", id
+                "Job Role",
+                id
         );
 
         if (!Boolean.TRUE.equals(jobRole.getActive())) {
@@ -215,56 +245,118 @@ public class AbroadJobServiceImpl implements AbroadJobService {
     }
 
     private AbroadJobLocation getLocation(Long id) {
-        AbroadJobLocation entity = required(
+        AbroadJobLocation location = required(
                 locationRepository.findById(id).orElse(null),
-                "Location", id
+                "Location",
+                id
         );
 
-        if (!Boolean.TRUE.equals(entity.getActive())) {
+        if (!Boolean.TRUE.equals(location.getActive())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Selected Location is inactive"
             );
         }
 
-        return entity;
+        if (location.getCountry() == null
+                || !Boolean.TRUE.equals(
+                location.getCountry().getActive())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Selected Location must belong to an active Country"
+            );
+        }
+
+        return location;
     }
 
     private AbroadJobCurrency getCurrency(Long id) {
-        AbroadJobCurrency entity = required(
+        AbroadJobCurrency currency = required(
                 currencyRepository.findById(id).orElse(null),
-                "Currency", id
+                "Currency",
+                id
         );
 
-        if (!Boolean.TRUE.equals(entity.getActive())) {
+        if (!Boolean.TRUE.equals(currency.getActive())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Selected Currency is inactive"
             );
         }
 
-        return entity;
+        return currency;
     }
 
     private AbroadJobType getJobType(Long id) {
-        AbroadJobType entity = required(
+        AbroadJobType jobType = required(
                 typeRepository.findById(id).orElse(null),
-                "Job Type", id
+                "Job Type",
+                id
         );
 
-        if (!Boolean.TRUE.equals(entity.getActive())) {
+        if (!Boolean.TRUE.equals(jobType.getActive())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Selected Job Type is inactive"
             );
         }
 
-        return entity;
+        return jobType;
+    }
+
+    private AbroadJobWorkType getWorkType(Long id) {
+        AbroadJobWorkType workType = required(
+                workTypeRepository.findById(id).orElse(null),
+                "Work Type",
+                id
+        );
+
+        if (!Boolean.TRUE.equals(workType.getActive())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Selected Work Type is inactive"
+            );
+        }
+
+        return workType;
+    }
+
+    private String convertSkillsToString(List<String> skills) {
+        if (skills == null) {
+            return "";
+        }
+
+        String result = skills.stream()
+                .filter(skill -> skill != null && !skill.isBlank())
+                .map(String::trim)
+                .distinct()
+                .collect(Collectors.joining(", "));
+
+        if (result.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "At least one valid skill is required"
+            );
+        }
+
+        return result;
+    }
+
+    private List<String> convertSkillsToList(String skills) {
+        if (skills == null || skills.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(skills.split(","))
+                .map(String::trim)
+                .filter(skill -> !skill.isBlank())
+                .toList();
     }
 
     private void applyRequest(
-            AbroadJob job, AbroadJobRequestDTO request) {
-
+            AbroadJob job,
+            AbroadJobRequestDTO request
+    ) {
         validateRequest(request);
 
         AbroadJobEducation education =
@@ -280,19 +372,26 @@ public class AbroadJobServiceImpl implements AbroadJobService {
         job.setEducation(education);
         job.setSector(sector);
         job.setJobRole(jobRole);
-        job.setSkill(request.getSkill().trim());
+
+        job.setSkill(convertSkillsToString(request.getSkills()));
         job.setOpenings(request.getOpenings());
+
         job.setLocation(getLocation(request.getLocationId()));
         job.setSalary(request.getSalary());
         job.setCurrency(getCurrency(request.getCurrencyId()));
         job.setJobType(getJobType(request.getJobTypeId()));
+        job.setWorkType(getWorkType(request.getWorkTypeId()));
+
+        job.setExperienceLevel(request.getExperienceLevel().trim());
         job.setDescription(request.getDescription());
-        job.setActive(request.getActive() == null
-                ? true : request.getActive());
+        job.setActive(
+                request.getActive() == null
+                        ? true
+                        : request.getActive()
+        );
     }
 
     private AbroadJobResponseDTO toResponse(AbroadJob job) {
-
         AbroadJobResponseDTO dto = new AbroadJobResponseDTO();
 
         dto.setId(job.getId());
@@ -307,11 +406,15 @@ public class AbroadJobServiceImpl implements AbroadJobService {
         dto.setJobRoleId(job.getJobRole().getId());
         dto.setJobRoleName(job.getJobRole().getName());
 
-        dto.setSkill(job.getSkill());
+        dto.setSkills(convertSkillsToList(job.getSkill()));
         dto.setOpenings(job.getOpenings());
 
         dto.setLocationId(job.getLocation().getId());
         dto.setLocationName(job.getLocation().getName());
+
+        AbroadJobCountry country = job.getLocation().getCountry();
+        dto.setCountryId(country != null ? country.getId() : null);
+        dto.setCountryName(country != null ? country.getName() : null);
 
         dto.setSalary(job.getSalary());
 
@@ -321,6 +424,11 @@ public class AbroadJobServiceImpl implements AbroadJobService {
         dto.setJobTypeId(job.getJobType().getId());
         dto.setJobTypeName(job.getJobType().getName());
 
+        AbroadJobWorkType workType = job.getWorkType();
+        dto.setWorkTypeId(workType != null ? workType.getId() : null);
+        dto.setWorkTypeName(workType != null ? workType.getName() : null);
+
+        dto.setExperienceLevel(job.getExperienceLevel());
         dto.setDescription(job.getDescription());
         dto.setActive(job.getActive());
 
@@ -331,8 +439,8 @@ public class AbroadJobServiceImpl implements AbroadJobService {
     public AbroadJobResponseDTO createJob(
             AbroadJobRequestDTO request,
             String role,
-            String email) {
-
+            String email
+    ) {
         checkPermission(role, email, "POST");
 
         AbroadJob job = new AbroadJob();
@@ -344,7 +452,6 @@ public class AbroadJobServiceImpl implements AbroadJobService {
     @Override
     @Transactional(readOnly = true)
     public List<AbroadJobResponseDTO> getAllJobs() {
-
         return jobRepository.findAll()
                 .stream()
                 .map(this::toResponse)
@@ -354,10 +461,10 @@ public class AbroadJobServiceImpl implements AbroadJobService {
     @Override
     @Transactional(readOnly = true)
     public AbroadJobResponseDTO getJobById(Long id) {
-
         AbroadJob job = required(
                 jobRepository.findById(id).orElse(null),
-                "Job", id
+                "Job",
+                id
         );
 
         return toResponse(job);
@@ -368,13 +475,14 @@ public class AbroadJobServiceImpl implements AbroadJobService {
             Long id,
             AbroadJobRequestDTO request,
             String role,
-            String email) {
-
+            String email
+    ) {
         checkPermission(role, email, "PUT");
 
         AbroadJob job = required(
                 jobRepository.findById(id).orElse(null),
-                "Job", id
+                "Job",
+                id
         );
 
         applyRequest(job, request);
@@ -384,19 +492,20 @@ public class AbroadJobServiceImpl implements AbroadJobService {
 
     @Override
     public void deleteJob(
-            Long id, String role, String email) {
-
+            Long id,
+            String role,
+            String email
+    ) {
         checkPermission(role, email, "DELETE");
 
         AbroadJob job = required(
                 jobRepository.findById(id).orElse(null),
-                "Job", id
+                "Job",
+                id
         );
 
         jobRepository.delete(job);
     }
-
-
 
     @Override
     @Transactional(readOnly = true)
@@ -407,6 +516,8 @@ public class AbroadJobServiceImpl implements AbroadJobService {
             Long jobRoleId,
             Long locationId,
             Long jobTypeId,
+            Long workTypeId,
+            String experienceLevel,
             BigDecimal minSalary,
             BigDecimal maxSalary,
             Boolean active,
@@ -415,8 +526,8 @@ public class AbroadJobServiceImpl implements AbroadJobService {
             String sortBy,
             String sortDir,
             String role,
-            String email) {
-
+            String email
+    ) {
         checkPermission(role, email, "GET");
 
         if (page < 0) {
@@ -433,8 +544,8 @@ public class AbroadJobServiceImpl implements AbroadJobService {
             );
         }
 
-        if (minSalary != null && minSalary.signum() < 0
-                || maxSalary != null && maxSalary.signum() < 0) {
+        if ((minSalary != null && minSalary.signum() < 0)
+                || (maxSalary != null && maxSalary.signum() < 0)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Salary filters cannot be negative"
@@ -450,13 +561,17 @@ public class AbroadJobServiceImpl implements AbroadJobService {
         }
 
         Set<String> allowedSortFields = Set.of(
-                "id", "jobTitle", "salary", "openings"
+                "id",
+                "jobTitle",
+                "salary",
+                "openings",
+                "experienceLevel"
         );
 
         if (sortBy == null || !allowedSortFields.contains(sortBy)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "sortBy must be one of: id, jobTitle, salary, openings"
+                    "sortBy must be one of: id, jobTitle, salary, openings, experienceLevel"
             );
         }
 
@@ -483,6 +598,8 @@ public class AbroadJobServiceImpl implements AbroadJobService {
                 jobRoleId,
                 locationId,
                 jobTypeId,
+                workTypeId,
+                experienceLevel,
                 minSalary,
                 maxSalary,
                 active

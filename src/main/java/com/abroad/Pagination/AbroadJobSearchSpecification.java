@@ -18,6 +18,8 @@ public final class AbroadJobSearchSpecification {
             Long jobRoleId,
             Long locationId,
             Long jobTypeId,
+            Long workTypeId,
+            String experienceLevel,
             BigDecimal minSalary,
             BigDecimal maxSalary,
             Boolean active) {
@@ -46,71 +48,59 @@ public final class AbroadJobSearchSpecification {
 
         if (educationId != null) {
             spec = spec.and((root, query, cb) ->
-                    cb.equal(
-                            root.get("education").get("id"),
-                            educationId
-                    )
-            );
+                    cb.equal(root.get("education").get("id"), educationId));
         }
 
         if (sectorId != null) {
             spec = spec.and((root, query, cb) ->
-                    cb.equal(
-                            root.get("sector").get("id"),
-                            sectorId
-                    )
-            );
+                    cb.equal(root.get("sector").get("id"), sectorId));
         }
 
         if (jobRoleId != null) {
             spec = spec.and((root, query, cb) ->
-                    cb.equal(
-                            root.get("jobRole").get("id"),
-                            jobRoleId
-                    )
-            );
+                    cb.equal(root.get("jobRole").get("id"), jobRoleId));
         }
 
         if (locationId != null) {
             spec = spec.and((root, query, cb) ->
-                    cb.equal(
-                            root.get("location").get("id"),
-                            locationId
-                    )
-            );
+                    cb.equal(root.get("location").get("id"), locationId));
         }
 
         if (jobTypeId != null) {
             spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("jobType").get("id"), jobTypeId));
+        }
+
+        if (workTypeId != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("workType").get("id"), workTypeId));
+        }
+
+        if (experienceLevel != null && !experienceLevel.isBlank()) {
+            String level = experienceLevel.trim().toLowerCase(Locale.ROOT);
+
+            spec = spec.and((root, query, cb) ->
                     cb.equal(
-                            root.get("jobType").get("id"),
-                            jobTypeId
-                    )
-            );
+                            cb.lower(root.get("experienceLevel")),
+                            level
+                    ));
         }
 
         if (minSalary != null) {
             spec = spec.and((root, query, cb) ->
                     cb.greaterThanOrEqualTo(
-                            root.get("salary"),
-                            minSalary
-                    )
-            );
+                            root.get("salary"), minSalary));
         }
 
         if (maxSalary != null) {
             spec = spec.and((root, query, cb) ->
                     cb.lessThanOrEqualTo(
-                            root.get("salary"),
-                            maxSalary
-                    )
-            );
+                            root.get("salary"), maxSalary));
         }
 
         if (active != null) {
             spec = spec.and((root, query, cb) ->
-                    cb.equal(root.get("active"), active)
-            );
+                    cb.equal(root.get("active"), active));
         }
 
         return spec;

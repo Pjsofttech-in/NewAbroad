@@ -49,7 +49,7 @@ public class SecurityConfig {
                                 "/getAllStreams","/searchUniversities","/searchStates","/searchCities","/searchColleges","/searchCountries","/searchStreams","/getAll","/getById/{id}", "/getAllScholarshipStudyLocation",
                                 "/leads/create", "/createConsultationBooking","/getAllCourses", "/getAllCountries", "/getAllContinents", "/getAllBlogs","createConsultationBooking","getAll","/getBlogById/{id}",
                                 "/getContinentById/{id}","/form-submission","/getStreamById/{id}","/getCountryById/{id}","/getCityById/{id}","/getUniversityById/{id}","/getCollegeById/{id}","/getStateById/{id}",
-                                "/admin/jobs/getAllJobs","/admin/jobs/{id}").permitAll()
+                                "/admin/jobs/getAllJobs","/admin/jobs/{id}","/apply").permitAll()
 
 
                                                .anyRequest().authenticated()

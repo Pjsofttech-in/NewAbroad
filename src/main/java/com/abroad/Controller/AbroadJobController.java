@@ -1,17 +1,15 @@
-
 package com.abroad.Controller;
 
 import com.abroad.DTO.AbroadJobRequestDTO;
 import com.abroad.DTO.AbroadJobResponseDTO;
 import com.abroad.Service.AbroadJobService;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.data.domain.Page;
 import java.math.BigDecimal;
-
 import java.util.List;
 
 @RestController
@@ -25,6 +23,7 @@ public class AbroadJobController {
         this.jobService = jobService;
     }
 
+    // Create Job
     @PostMapping
     public ResponseEntity<AbroadJobResponseDTO> createJob(
             @RequestBody AbroadJobRequestDTO request,
@@ -38,22 +37,22 @@ public class AbroadJobController {
                 .body(response);
     }
 
-    @GetMapping ("/getAllJobs")
+    // Get All Jobs
+    @GetMapping("/getAllJobs")
     public ResponseEntity<List<AbroadJobResponseDTO>> getAllJobs() {
 
-        return ResponseEntity.ok(
-                jobService.getAllJobs()
-        );
+        return ResponseEntity.ok(jobService.getAllJobs());
     }
 
+    // Get Job By ID
     @GetMapping("/{id}")
-    public ResponseEntity<AbroadJobResponseDTO> getJobById(@PathVariable Long id) {
+    public ResponseEntity<AbroadJobResponseDTO> getJobById(
+            @PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                jobService.getJobById(id)
-        );
+        return ResponseEntity.ok(jobService.getJobById(id));
     }
 
+    // Update Job
     @PutMapping("/{id}")
     public ResponseEntity<AbroadJobResponseDTO> updateJob(
             @PathVariable Long id,
@@ -66,6 +65,7 @@ public class AbroadJobController {
         );
     }
 
+    // Delete Job
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteJob(
             @PathVariable Long id,
@@ -77,7 +77,7 @@ public class AbroadJobController {
         return ResponseEntity.ok("Job deleted successfully");
     }
 
-
+    // Search and Filter Jobs
     @GetMapping("/search")
     public ResponseEntity<Page<AbroadJobResponseDTO>> searchJobs(
             @RequestParam(required = false) String keyword,
@@ -86,13 +86,20 @@ public class AbroadJobController {
             @RequestParam(required = false) Long jobRoleId,
             @RequestParam(required = false) Long locationId,
             @RequestParam(required = false) Long jobTypeId,
+
+            // New filters
+            @RequestParam(required = false) Long workTypeId,
+            @RequestParam(required = false) String experienceLevel,
+
             @RequestParam(required = false) BigDecimal minSalary,
             @RequestParam(required = false) BigDecimal maxSalary,
             @RequestParam(required = false) Boolean active,
+
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "DESC") String sortDir,
+
             @RequestParam String role,
             @RequestParam String email) {
 
@@ -104,6 +111,8 @@ public class AbroadJobController {
                         jobRoleId,
                         locationId,
                         jobTypeId,
+                        workTypeId,
+                        experienceLevel,
                         minSalary,
                         maxSalary,
                         active,

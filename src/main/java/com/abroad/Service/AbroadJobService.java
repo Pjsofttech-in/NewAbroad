@@ -1,13 +1,10 @@
-
 package com.abroad.Service;
 
 import com.abroad.DTO.AbroadJobRequestDTO;
 import com.abroad.DTO.AbroadJobResponseDTO;
-
 import org.springframework.data.domain.Page;
+
 import java.math.BigDecimal;
-
-
 import java.util.List;
 
 public interface AbroadJobService {
@@ -29,11 +26,7 @@ public interface AbroadJobService {
             String email
     );
 
-    void deleteJob(
-            Long id,
-            String role,
-            String email
-    );
+    void deleteJob(Long id, String role, String email);
 
     Page<AbroadJobResponseDTO> searchJobs(
             String keyword,
@@ -42,6 +35,8 @@ public interface AbroadJobService {
             Long jobRoleId,
             Long locationId,
             Long jobTypeId,
+            Long workTypeId,
+            String experienceLevel,
             BigDecimal minSalary,
             BigDecimal maxSalary,
             Boolean active,

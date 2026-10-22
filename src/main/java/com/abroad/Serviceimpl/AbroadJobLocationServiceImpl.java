@@ -1,24 +1,36 @@
 package com.abroad.Serviceimpl;
 
+import com.abroad.Entity.AbroadJobCountry;
 import com.abroad.Entity.AbroadJobLocation;
+import com.abroad.Repository.AbroadJobCountryRepository;
 import com.abroad.Repository.AbroadJobLocationRepository;
 import com.abroad.Service.AbroadJobLocationService;
 import com.abroad.Service.PermissionService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class AbroadJobLocationServiceImpl
         implements AbroadJobLocationService {
 
-    @Autowired
-    private AbroadJobLocationRepository repository;
+    private final AbroadJobLocationRepository repository;
+    private final AbroadJobCountryRepository countryRepository;
+    private final PermissionService permissionService;
 
-    @Autowired
-    private PermissionService permissionService;
+    public AbroadJobLocationServiceImpl(
+            AbroadJobLocationRepository repository,
+            AbroadJobCountryRepository countryRepository,
+            PermissionService permissionService) {
+
+        this.repository = repository;
+        this.countryRepository = countryRepository;
+        this.permissionService = permissionService;
+    }
 
     @Override
     public AbroadJobLocation create(
@@ -28,37 +40,64 @@ public class AbroadJobLocationServiceImpl
 
         checkPermission(role, email, "POST");
 
-        validateName(location.getName());
+        String name = validateName(location.getName());
 
-        String name = location.getName().trim();
-
-        if (repository.existsByNameIgnoreCase(name)) {
-            throw new RuntimeException(
-                    "Location already exists: " + name
-            );
+        if (location.getCountry() == null
+                || location.getCountry().getId() == null) {
+            throw new IllegalArgumentException(
+                    "Country ID is required");
         }
 
-        location.setId(null);
-        location.setName(name);
+        Long countryId = location.getCountry().getId();
 
-        if (location.getActive() == null) {
-            location.setActive(true);
+        AbroadJobCountry country = countryRepository.findById(countryId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Country not found with id: " + countryId));
+
+        if (!Boolean.TRUE.equals(country.getActive())) {
+            throw new IllegalArgumentException(
+                    "Cannot add a location to an inactive country");
         }
 
-        return repository.save(location);
+        if (repository.existsByNameIgnoreCaseAndCountry_Id(
+                name, countryId)) {
+            throw new IllegalArgumentException(
+                    "Location already exists in this country: " + name);
+        }
+
+        AbroadJobLocation newLocation = new AbroadJobLocation();
+        newLocation.setName(name);
+        newLocation.setCountry(country);
+        newLocation.setActive(
+                location.getActive() == null
+                        ? true : location.getActive());
+
+        return repository.save(newLocation);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AbroadJobLocation> getAll(
             String role,
             String email) {
 
         checkPermission(role, email, "GET");
 
-        return repository.findAll();
+        List<AbroadJobLocation> locations = repository.findAll();
+
+        // Initialize country data before returning the entities.
+        locations.forEach(location -> {
+            if (location.getCountry() != null) {
+                location.getCountry().getName();
+            }
+        });
+
+        return locations;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AbroadJobLocation getById(
             Long id,
             String role,
@@ -66,12 +105,16 @@ public class AbroadJobLocationServiceImpl
 
         checkPermission(role, email, "GET");
 
-        return repository.findById(id)
+        AbroadJobLocation location = repository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Location not found with id: " + id
-                        )
-                );
+                        new IllegalArgumentException(
+                                "Location not found with id: " + id));
+
+        if (location.getCountry() != null) {
+            location.getCountry().getName();
+        }
+
+        return location;
     }
 
     @Override
@@ -83,30 +126,46 @@ public class AbroadJobLocationServiceImpl
 
         checkPermission(role, email, "PUT");
 
-        validateName(location.getName());
+        String name = validateName(location.getName());
 
-        AbroadJobLocation existing =
-                repository.findById(id)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Location not found with id: "
-                                                + id
-                                )
-                        );
+        AbroadJobLocation existing = repository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Location not found with id: " + id));
 
-        String name = location.getName().trim();
+        // Preserve the current country unless a new one is supplied.
+        AbroadJobCountry country = existing.getCountry();
 
-        repository.findByNameIgnoreCase(name)
-                .ifPresent(found -> {
+        if (location.getCountry() != null
+                && location.getCountry().getId() != null) {
 
-                    if (!found.getId().equals(id)) {
-                        throw new RuntimeException(
-                                "Location already exists: " + name
-                        );
-                    }
-                });
+            Long countryId = location.getCountry().getId();
+
+            country = countryRepository.findById(countryId)
+                    .orElseThrow(() ->
+                            new IllegalArgumentException(
+                                    "Country not found with id: " + countryId));
+
+            if (!Boolean.TRUE.equals(country.getActive())) {
+                throw new IllegalArgumentException(
+                        "Cannot assign a location to an inactive country");
+            }
+        }
+
+        if (country == null || country.getId() == null) {
+            throw new IllegalArgumentException(
+                    "A country must be assigned to this location");
+        }
+
+        if (repository
+                .existsByNameIgnoreCaseAndCountry_IdAndIdNot(
+                        name, country.getId(), id)) {
+            throw new IllegalArgumentException(
+                    "Location already exists in this country: " + name);
+        }
 
         existing.setName(name);
+        existing.setCountry(country);
 
         if (location.getActive() != null) {
             existing.setActive(location.getActive());
@@ -123,25 +182,22 @@ public class AbroadJobLocationServiceImpl
 
         checkPermission(role, email, "DELETE");
 
-        AbroadJobLocation location =
-                repository.findById(id)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Location not found with id: "
-                                                + id
-                                )
-                        );
+        AbroadJobLocation location = repository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Location not found with id: " + id));
 
         repository.delete(location);
     }
 
-    private void validateName(String name) {
+    private String validateName(String name) {
 
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException(
-                    "Location name is required"
-            );
+                    "Location name is required");
         }
+
+        return name.trim();
     }
 
     private void checkPermission(
@@ -150,15 +206,11 @@ public class AbroadJobLocationServiceImpl
             String action) {
 
         if (!permissionService.hasPermission(
-                role,
-                email,
-                action)) {
+                role, email, action)) {
 
             throw new AccessDeniedException(
-                    "No permission to perform " +
-                            action +
-                            " operation on Job Location"
-            );
+                    "No permission to perform " + action
+                            + " operation on Job Location");
         }
     }
 }

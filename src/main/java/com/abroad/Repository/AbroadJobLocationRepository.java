@@ -14,4 +14,13 @@ public interface AbroadJobLocationRepository
     boolean existsByNameIgnoreCase(String name);
 
     List<AbroadJobLocation> findByActiveTrue();
+
+    List<AbroadJobLocation> findByCountry_IdAndActiveTrue(Long countryId);
+
+    boolean existsByNameIgnoreCaseAndCountry_Id(
+            String name, Long countryId);
+
+    boolean existsByNameIgnoreCaseAndCountry_IdAndIdNot(
+            String name, Long countryId, Long id);
 }
+

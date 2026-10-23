@@ -69,11 +69,7 @@ public class AbroadJobSectorServiceImpl
     // GET ALL SECTORS
     @Override
     @Transactional(readOnly = true)
-    public List<AbroadJobSectorResponseDTO> getAll(
-            String role,
-            String email) {
-
-        checkPermission(role, email, "GET");
+    public List<AbroadJobSectorResponseDTO> getAll() {
 
         return repository.findAll()
                 .stream()
@@ -85,11 +81,8 @@ public class AbroadJobSectorServiceImpl
     @Override
     @Transactional(readOnly = true)
     public List<AbroadJobSectorResponseDTO> getByEducation(
-            Long educationId,
-            String role,
-            String email) {
+            Long educationId) {
 
-        checkPermission(role, email, "GET");
 
         getEducation(educationId);
 
@@ -103,12 +96,8 @@ public class AbroadJobSectorServiceImpl
     // GET SECTOR BY ID
     @Override
     @Transactional(readOnly = true)
-    public AbroadJobSectorResponseDTO getById(
-            Long id,
-            String role,
-            String email) {
+    public AbroadJobSectorResponseDTO getById(Long id) {
 
-        checkPermission(role, email, "GET");
 
         AbroadJobSector sector = repository.findById(id)
                 .orElseThrow(() ->

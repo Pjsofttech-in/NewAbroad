@@ -48,18 +48,14 @@ public class AbroadJobWorkTypeServiceImpl implements AbroadJobWorkTypeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AbroadJobWorkType> getAll(String role, String email) {
-
-        checkPermission(role, email, "GET");
+    public List<AbroadJobWorkType> getAll() {
 
         return repository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public AbroadJobWorkType getById(Long id, String role, String email) {
-
-        checkPermission(role, email, "GET");
+    public AbroadJobWorkType getById(Long id) {
 
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(

@@ -49,22 +49,13 @@ public class AbroadJobTypeServiceImpl
     }
 
     @Override
-    public List<AbroadJobType> getAll(
-            String role,
-            String email) {
-
-        checkPermission(role, email, "GET");
+    public List<AbroadJobType> getAll() {
 
         return repository.findAll();
     }
 
     @Override
-    public AbroadJobType getById(
-            Long id,
-            String role,
-            String email) {
-
-        checkPermission(role, email, "GET");
+    public AbroadJobType getById(Long id) {
 
         return repository.findById(id)
                 .orElseThrow(() ->

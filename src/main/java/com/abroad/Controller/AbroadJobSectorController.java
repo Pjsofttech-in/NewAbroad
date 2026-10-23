@@ -31,32 +31,26 @@ public class AbroadJobSectorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AbroadJobSectorResponseDTO>> getAll(
-            @RequestParam String role,
-            @RequestParam String email) {
+    public ResponseEntity<List<AbroadJobSectorResponseDTO>> getAll() {
 
-        return ResponseEntity.ok(service.getAll(role, email));
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/by-education/{educationId}")
     public ResponseEntity<List<AbroadJobSectorResponseDTO>> getByEducation(
-            @PathVariable Long educationId,
-            @RequestParam String role,
-            @RequestParam String email) {
+            @PathVariable Long educationId) {
 
         return ResponseEntity.ok(
-                service.getByEducation(educationId, role, email)
+                service.getByEducation(educationId)
         );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AbroadJobSectorResponseDTO> getById(
-            @PathVariable Long id,
-            @RequestParam String role,
-            @RequestParam String email) {
+            @PathVariable Long id) {
 
         return ResponseEntity.ok(
-                service.getById(id, role, email)
+                service.getById(id)
         );
     }
 

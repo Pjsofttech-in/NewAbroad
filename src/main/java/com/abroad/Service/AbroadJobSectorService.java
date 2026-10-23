@@ -13,19 +13,11 @@ public interface AbroadJobSectorService {
             String role,
             String email);
 
-    List<AbroadJobSectorResponseDTO> getAll(
-            String role,
-            String email);
+    List<AbroadJobSectorResponseDTO> getAll();
 
-    List<AbroadJobSectorResponseDTO> getByEducation(
-            Long educationId,
-            String role,
-            String email);
+    List<AbroadJobSectorResponseDTO> getByEducation(Long educationId);
 
-    AbroadJobSectorResponseDTO getById(
-            Long id,
-            String role,
-            String email);
+    AbroadJobSectorResponseDTO getById(Long id);
 
     AbroadJobSectorResponseDTO update(
             Long id,

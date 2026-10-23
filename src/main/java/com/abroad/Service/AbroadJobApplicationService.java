@@ -29,6 +29,7 @@ public interface AbroadJobApplicationService {
     AbroadJobApplicationResponseDTO updateStatus(
             Long id,
             JobApplicationStatus status,
+            String Remark,
             String role,
             String email
     );

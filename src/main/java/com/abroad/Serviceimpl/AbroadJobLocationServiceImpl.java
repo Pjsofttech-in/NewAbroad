@@ -78,11 +78,7 @@ public class AbroadJobLocationServiceImpl
 
     @Override
     @Transactional(readOnly = true)
-    public List<AbroadJobLocation> getAll(
-            String role,
-            String email) {
-
-        checkPermission(role, email, "GET");
+    public List<AbroadJobLocation> getAll() {
 
         List<AbroadJobLocation> locations = repository.findAll();
 
@@ -98,12 +94,8 @@ public class AbroadJobLocationServiceImpl
 
     @Override
     @Transactional(readOnly = true)
-    public AbroadJobLocation getById(
-            Long id,
-            String role,
-            String email) {
+    public AbroadJobLocation getById(Long id) {
 
-        checkPermission(role, email, "GET");
 
         AbroadJobLocation location = repository.findById(id)
                 .orElseThrow(() ->

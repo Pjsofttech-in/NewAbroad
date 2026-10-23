@@ -24,7 +24,7 @@ public class AbroadScholarship {
     private String sname;
     private String qualification;
     private String link;
-    private Long amount;
+    private String amount;
     private String branchCode;
 
     // Dynamic fields (can be converted to @ManyToOne later)

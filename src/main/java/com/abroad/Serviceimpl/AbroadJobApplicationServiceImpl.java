@@ -162,6 +162,7 @@ public class AbroadJobApplicationServiceImpl
     public AbroadJobApplicationResponseDTO updateStatus(
             Long id,
             JobApplicationStatus status,
+            String Remark,
             String role,
             String email) {
 
@@ -175,6 +176,7 @@ public class AbroadJobApplicationServiceImpl
 
         AbroadJobApplication application = findApplication(id);
         application.setStatus(status);
+        application.setRemark(Remark);
 
         return toResponse(applicationRepository.save(application));
     }
@@ -189,9 +191,27 @@ public class AbroadJobApplicationServiceImpl
         checkPermission(role, email, "DELETE");
 
         AbroadJobApplication application = findApplication(id);
+
+        String resumeUrl = application.getResumeUrl();
+
+        // Deactivate the application in the database
         application.setActive(false);
         applicationRepository.save(application);
+
+        // Delete the resume from S3
+        if (resumeUrl != null && !resumeUrl.isBlank()) {
+            try {
+                s3Service.deleteImage(resumeUrl);
+            } catch (RuntimeException ex) {
+                throw new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Application was deactivated, but resume deletion from S3 failed",
+                        ex
+                );
+            }
+        }
     }
+
 
     private void validateApplication(
             AbroadJobApplicationRequestDTO request,
@@ -291,7 +311,8 @@ public class AbroadJobApplicationServiceImpl
                 application.getCoverLetter(),
                 application.getStatus(),
                 application.getAppliedAt(),
-                application.getActive()
+                application.getActive(),
+                application.getRemark()
         );
     }
 

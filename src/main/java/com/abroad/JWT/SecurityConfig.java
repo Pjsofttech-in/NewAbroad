@@ -49,7 +49,9 @@ public class SecurityConfig {
                                 "/getAllStreams","/searchUniversities","/searchStates","/searchCities","/searchColleges","/searchCountries","/searchStreams","/getAll","/getById/{id}", "/getAllScholarshipStudyLocation",
                                 "/leads/create", "/createConsultationBooking","/getAllCourses", "/getAllCountries", "/getAllContinents", "/getAllBlogs","createConsultationBooking","getAll","/getBlogById/{id}",
                                 "/getContinentById/{id}","/form-submission","/getStreamById/{id}","/getCountryById/{id}","/getCityById/{id}","/getUniversityById/{id}","/getCollegeById/{id}","/getStateById/{id}",
-                                "/admin/jobs/getAllJobs","/admin/jobs/{id}","/apply").permitAll()
+                                "/admin/jobs/getAllJobs","/admin/jobs/{id}","/job-applications/apply","/createEnquiry","/admin/job-settings/education","/admin/job-settings/education/{id}","/admin/job-settings/location",
+                                "/admin/job-settings/location/{id}","/admin/job-settings/role","/admin/job-settings/role/{id}","/admin/job-settings/sector","/admin/job-settings/sector/{id}","/admin/job-settings/job-type",
+                                "/admin/job-settings/job-type/{id}","/admin/job-settings/work-type","/admin/job-settings/work-type/{id}","/admin/job-settings/country","/admin/job-settings/country/{id}").permitAll()
 
 
                                                .anyRequest().authenticated()

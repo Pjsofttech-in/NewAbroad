@@ -35,4 +35,6 @@ public class AbroadJobApplicationResponseDTO {
     private LocalDateTime appliedAt;
 
     private Boolean active;
+
+    private String remark;
 }

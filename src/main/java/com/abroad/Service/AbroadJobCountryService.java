@@ -8,11 +8,9 @@ public interface AbroadJobCountryService {
     AbroadJobCountry createCountry(
             AbroadJobCountry country, String role, String email);
 
-    List<AbroadJobCountry> getAllCountries(
-            String role, String email);
+    List<AbroadJobCountry> getAllCountries();
 
-    AbroadJobCountry getCountryById(
-            Long id, String role, String email);
+    AbroadJobCountry getCountryById(Long id);
 
     AbroadJobCountry updateCountry(
             Long id, AbroadJobCountry country, String role, String email);

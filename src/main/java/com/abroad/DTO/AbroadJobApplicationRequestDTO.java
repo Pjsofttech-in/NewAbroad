@@ -20,4 +20,6 @@ public class AbroadJobApplicationRequestDTO {
     private String phone;
 
     private String coverLetter;
+
+    private String remark;
 }

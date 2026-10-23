@@ -69,20 +69,15 @@ public class AbroadJobCountryServiceImpl
 
     @Override
     @Transactional(readOnly = true)
-    public List<AbroadJobCountry> getAllCountries(
-            String role, String email) {
-
-        checkPermission(role, email, "GET");
+    public List<AbroadJobCountry> getAllCountries() {
 
         return countryRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public AbroadJobCountry getCountryById(
-            Long id, String role, String email) {
+    public AbroadJobCountry getCountryById(Long id) {
 
-        checkPermission(role, email, "GET");
 
         return countryRepository.findById(id)
                 .orElseThrow(() ->

@@ -32,22 +32,18 @@ public class AbroadJobCountryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AbroadJobCountry>> getAllCountries(
-            @RequestParam String role,
-            @RequestParam String email) {
+    public ResponseEntity<List<AbroadJobCountry>> getAllCountries() {
 
         return ResponseEntity.ok(
-                countryService.getAllCountries(role, email));
+                countryService.getAllCountries());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AbroadJobCountry> getCountryById(
-            @PathVariable Long id,
-            @RequestParam String role,
-            @RequestParam String email) {
+            @PathVariable Long id) {
 
         return ResponseEntity.ok(
-                countryService.getCountryById(id, role, email));
+                countryService.getCountryById(id));
     }
 
     @PutMapping("/{id}")

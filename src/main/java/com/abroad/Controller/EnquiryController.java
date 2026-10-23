@@ -30,8 +30,6 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
                                                    @RequestParam(value = "image", required = false) MultipartFile image,
                                                    @RequestParam(value = "document1", required = false) MultipartFile document1,
                                                    @RequestParam(value = "document2", required = false) MultipartFile document2,
-                                                   @RequestParam String role,
-                                                   @RequestParam String email,
                                                    @RequestParam Long continentId,
                                                    @RequestParam Long countryId,
                                                    @RequestParam Long universityId,
@@ -46,7 +44,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
     AbroadEnquiry abroadEnquiry = mapper.readValue(enquiryJson, AbroadEnquiry.class);
 
     AbroadEnquiry created = service.createEnquiry(abroadEnquiry, image, document1, document2,
-            role, email, continentId, countryId, universityId, stateId, cityId, collegeId);
+           continentId, countryId, universityId, stateId, cityId, collegeId);
 
     return ResponseEntity.ok(created);
 }

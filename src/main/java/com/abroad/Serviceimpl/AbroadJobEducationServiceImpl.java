@@ -55,22 +55,14 @@ public class AbroadJobEducationServiceImpl
     }
 
     @Override
-    public List<AbroadJobEducation> getAll(
-            String role,
-            String email) {
-
-        checkPermission(role, email, "GET");
+    public List<AbroadJobEducation> getAll() {
 
         return repository.findAll();
     }
 
     @Override
-    public AbroadJobEducation getById(
-            Long id,
-            String role,
-            String email) {
+    public AbroadJobEducation getById(Long id) {
 
-        checkPermission(role, email, "GET");
 
         return repository.findById(id)
                 .orElseThrow(() ->

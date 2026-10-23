@@ -58,6 +58,9 @@ public class AbroadJobApplication {
     @Column(nullable = false)
     private Boolean active = true;
 
+    @Column(columnDefinition = "TEXT")
+    private String remark;
+
     @PrePersist
     protected void onCreate() {
         if (appliedAt == null) {

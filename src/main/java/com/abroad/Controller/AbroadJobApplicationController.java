@@ -75,17 +75,18 @@ public class AbroadJobApplicationController {
     public ResponseEntity<AbroadJobApplicationResponseDTO> updateStatus(
             @PathVariable Long id,
             @RequestParam JobApplicationStatus status,
+            @RequestParam String remark,
             @RequestParam String role,
             @RequestParam String email) {
 
         AbroadJobApplicationResponseDTO response =
                 jobApplicationService.updateStatus(
-                        id, status, role, email);
+                        id, status,remark, role, email);
 
         return ResponseEntity.ok(response);
     }
 
-    // 5. Soft-delete (deactivate) an application
+
     @DeleteMapping("/admin/{id}")
     public ResponseEntity<String> deactivateApplication(
             @PathVariable Long id,

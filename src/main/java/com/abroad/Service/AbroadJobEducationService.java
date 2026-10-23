@@ -12,16 +12,9 @@ public interface AbroadJobEducationService {
             String email
     );
 
-    List<AbroadJobEducation> getAll(
-            String role,
-            String email
-    );
+    List<AbroadJobEducation> getAll();
 
-    AbroadJobEducation getById(
-            Long id,
-            String role,
-            String email
-    );
+    AbroadJobEducation getById(Long id);
 
     AbroadJobEducation update(
             Long id,

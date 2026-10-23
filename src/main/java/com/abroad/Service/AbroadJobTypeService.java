@@ -12,16 +12,9 @@ public interface AbroadJobTypeService {
             String email
     );
 
-    List<AbroadJobType> getAll(
-            String role,
-            String email
-    );
+    List<AbroadJobType> getAll();
 
-    AbroadJobType getById(
-            Long id,
-            String role,
-            String email
-    );
+    AbroadJobType getById(Long id);
 
     AbroadJobType update(
             Long id,

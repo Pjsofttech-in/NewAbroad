@@ -31,22 +31,18 @@ public class AbroadJobWorkTypeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AbroadJobWorkType>> getAll(
-            @RequestParam String role,
-            @RequestParam String email) {
+    public ResponseEntity<List<AbroadJobWorkType>> getAll() {
 
         return ResponseEntity.ok(
-                service.getAll(role, email));
+                service.getAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AbroadJobWorkType> getById(
-            @PathVariable Long id,
-            @RequestParam String role,
-            @RequestParam String email) {
+            @PathVariable Long id) {
 
         return ResponseEntity.ok(
-                service.getById(id, role, email));
+                service.getById(id));
     }
 
     @PutMapping("/{id}")

@@ -64,11 +64,8 @@ public class AbroadJobRoleServiceImpl
     }
 
     @Override
-    public List<AbroadJobRoleResponseDTO> getAll(
-            String role,
-            String email) {
+    public List<AbroadJobRoleResponseDTO> getAll() {
 
-        checkPermission(role, email, "GET");
 
         return repository.findAll()
                 .stream()
@@ -77,12 +74,7 @@ public class AbroadJobRoleServiceImpl
     }
 
     @Override
-    public List<AbroadJobRoleResponseDTO> getBySector(
-            Long sectorId,
-            String role,
-            String email) {
-
-        checkPermission(role, email, "GET");
+    public List<AbroadJobRoleResponseDTO> getBySector(Long sectorId) {
 
         getSector(sectorId);
 
@@ -94,12 +86,7 @@ public class AbroadJobRoleServiceImpl
     }
 
     @Override
-    public AbroadJobRoleResponseDTO getById(
-            Long id,
-            String role,
-            String email) {
-
-        checkPermission(role, email, "GET");
+    public AbroadJobRoleResponseDTO getById(Long id) {
 
         AbroadJobRole jobRole =
                 repository.findById(id)

@@ -59,14 +59,14 @@
 
         @Override
         public AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image, MultipartFile document1, MultipartFile document2,
-                                           String role, String email, Long continentId, Long countryId, Long universityId,
+                                           Long continentId, Long countryId, Long universityId,
                                            Long stateId, Long cityId, Long collegeId) {
 
-            if (!permissionService.hasPermission(role, email, "POST")) {
-                throw new AccessDeniedException("No permission to create Enquiry");
-            }
-
-            String branchCode = permissionService.fetchBranchCode(role, email);
+//            if (!permissionService.hasPermission(role, email, "POST")) {
+//                throw new AccessDeniedException("No permission to create Enquiry");
+//            }
+//
+//            String branchCode = permissionService.fetchBranchCode(role, email);
 
             try {
                 if (image != null && !image.isEmpty()) {
@@ -91,9 +91,9 @@
             if (abroadEnquiry.getEnquiry_date() == null) {
                 abroadEnquiry.setEnquiry_date(LocalDate.now());
             }
-            abroadEnquiry.setCreatedByEmail(email);
-            abroadEnquiry.setRole(role);
-            abroadEnquiry.setBranchCode(branchCode);
+//            abroadEnquiry.setCreatedByEmail(email);
+//            abroadEnquiry.setRole(role);
+//            abroadEnquiry.setBranchCode(branchCode);
 
 
             AbroadContinent continent = continentRepository.findById(continentId).orElseThrow(() -> new RuntimeException("Continent not found"));
